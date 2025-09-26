@@ -4,7 +4,7 @@
 A lightweight **Amazon-like backend** built with **FastAPI** for managing customers, orders, and order items.  
 This project is a learning-by-building exercise to practice modern Python backend development.
 
-## 🚀 Features
+##  Features
 
 - Customer creation & retrieval (CRUD)
 - Create orders with multiple items; automatic total calculation
@@ -12,7 +12,7 @@ This project is a learning-by-building exercise to practice modern Python backen
 - SQLAlchemy ORM models and simple DB setup for development
 - Modular structure suitable for extension (auth, payments, migrations)
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **FastAPI** — web framework  
 - **SQLAlchemy** — ORM  
@@ -20,6 +20,6 @@ This project is a learning-by-building exercise to practice modern Python backen
 - **Uvicorn** — ASGI server  
 - **Alembic** (optional) — migrations
 
-## 📂 Project Structure
+
 
 
