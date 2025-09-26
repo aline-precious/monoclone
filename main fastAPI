@@ -1,0 +1,18 @@
+from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
+from app.routers import orders
+from app.db import session as db_session
+from app.db.base import Base
+from app.core import errors
+from app.core.config import settings
+
+#our entrypoint. It’s where we define create_app() and build the FastAPI app
+def create_app() -> FastAPI:
+    app = FastAPI(...)
+    app.add_middleware(...)
+    app.include_router(orders.router)
+    app.add_exception_handler(...)
+    @app.on_event("startup")
+    def on_startup():
+        Base.metadata.create_all(bind=db_session.engine)
+    return app
