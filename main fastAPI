@@ -1,18 +1,49 @@
+"""Main entry point for the Monoclone FastAPI application."""
+
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 from app.routers import orders
 from app.db import session as db_session
 from app.db.base import Base
 from app.core import errors
 from app.core.config import settings
 
-#our entrypoint. It’s where we define create_app() and build the FastAPI app
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Handle startup and shutdown events."""
+    # Startup: create all database tables
+    Base.metadata.create_all(bind=db_session.engine)
+    yield
+    # Shutdown: clean up resources if needed
+
+
 def create_app() -> FastAPI:
-    app = FastAPI(...)
-    app.add_middleware(...)
-    app.include_router(orders.router)
-    app.add_exception_handler(...)
-    @app.on_event("startup")
-    def on_startup():
-        Base.metadata.create_all(bind=db_session.engine)
+    """Create and configure the FastAPI application."""
+    app = FastAPI(
+        title=settings.PROJECT_NAME,
+        description="A lightweight Amazon-like Order Management API",
+        version="1.0.0",
+        lifespan=lifespan,
+    )
+
+    # CORS middleware - controls which frontends can talk to this API
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.ALLOWED_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    # Routes
+    app.include_router(orders.router, prefix="/orders", tags=["Orders"])
+
+    # Exception handlers
+    app.add_exception_handler(errors.CustomException, errors.custom_exception_handler)
+
     return app
+
+
+app = create_app()
